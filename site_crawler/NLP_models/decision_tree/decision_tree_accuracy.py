@@ -6,16 +6,31 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.text import TfidfTransformer
+import os
+
 
 def readcsv():
-    df = pd.read_csv("../../data/dataset/csv/dataset_sentiment.csv", )  # read labelled tweets
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    relative_path = "../../data/dataset/csv/dataset_sentiment.csv"
+    file_path = os.path.join(script_dir, relative_path)
+
+    df = pd.read_csv(file_path)  # read labelled tweets
     X = df.text
     y = df.label
     return X, y
 
+
 def decision_tree_accuracy(X, y):
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=1)
-    random_forest = Pipeline([('vect', CountVectorizer()), ('tfidf', TfidfTransformer()), ('Random', DecisionTreeClassifier())])
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=0.3, random_state=1
+    )
+    random_forest = Pipeline(
+        [
+            ("vect", CountVectorizer()),
+            ("tfidf", TfidfTransformer()),
+            ("Random", DecisionTreeClassifier()),
+        ]
+    )
     random_forest = random_forest.fit(X_train, y_train)
     ypred = random_forest.predict(X_test)
     print("Decision Tree metrics")

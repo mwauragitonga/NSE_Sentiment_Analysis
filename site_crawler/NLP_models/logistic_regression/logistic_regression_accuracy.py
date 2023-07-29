@@ -6,17 +6,37 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.text import TfidfTransformer
+import os
+
 
 def readcsv():
-    df = pd.read_csv("../../data/dataset/csv/dataset_sentiment.csv", )  # read labelled tweets
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    relative_path = "../../data/dataset/csv/dataset_sentiment.csv"
+    file_path = os.path.join(script_dir, relative_path)
+
+    df = pd.read_csv(file_path)  # read labelled tweets
     X = df.text
     y = df.label
     return X, y
 
+
 def logistic_regression_accuracy(X, y):
     """Different Classifiers"""
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=1)
-    logreg = Pipeline([('vect', CountVectorizer()), ('tfidf', TfidfTransformer()), ('logistic', LogisticRegression(C=.001, multi_class='multinomial',solver='lbfgs',random_state=1))])
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=0.3, random_state=1
+    )
+    logreg = Pipeline(
+        [
+            ("vect", CountVectorizer()),
+            ("tfidf", TfidfTransformer()),
+            (
+                "logistic",
+                LogisticRegression(
+                    C=0.001, multi_class="multinomial", solver="lbfgs", random_state=1
+                ),
+            ),
+        ]
+    )
     logreg = logreg.fit(X_train, y_train)
     ypred = logreg.predict(X_test)
     print("Logistic Regression metrics")

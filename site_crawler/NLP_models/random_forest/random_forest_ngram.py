@@ -6,12 +6,15 @@ from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.text import TfidfTransformer
 from sklearn.ensemble import RandomForestClassifier
+import os
 
 
 def readcsv():
-    df = pd.read_csv(
-        "../../data/dataset/csv/dataset_sentiment.csv",
-    )
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    relative_path = "../../data/dataset/csv/dataset_sentiment.csv"
+    file_path = os.path.join(script_dir, relative_path)
+
+    df = pd.read_csv(file_path)
     X = df.text
     y = df.label
     return X, y

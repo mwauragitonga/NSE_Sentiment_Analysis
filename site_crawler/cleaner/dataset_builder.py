@@ -1,28 +1,40 @@
 import csv
-from site_crawler.cleaner.cleaner import Cleaner
+import os
+from cleaner import Cleaner
 
 
 class Dataset_Builder:
     def __init__(self):
+        self.script_dir = os.path.dirname(os.path.abspath(__file__))
         self.cleaner = Cleaner()
         self.create_csv_headers()
 
     def create_csv_headers(self):
         csv_files = ["negative_sentiment", "positive_sentiment", "dataset_sentiment"]
+
         for csv_file in csv_files:
-            with open("../data/dataset/csv/" + csv_file + ".csv", "a") as f:
+            relative_path = "../data/dataset/csv/" + csv_file + ".csv"
+            file_path = os.path.join(self.script_dir, relative_path)
+
+            with open(file_path, "a") as f:
                 writer = csv.writer(f)
                 writer.writerow(["text", "label"])
 
     def write_tweet_txt(self, sentiment, name):
-        file = open("../data/dataset/txt/" + name + ".txt", "a")
+        relative_path = "../data/dataset/txt/" + name + ".txt"
+        file_path = os.path.join(self.script_dir, relative_path)
+
+        file = open(file_path, "a")
         line = sentiment.strip()
         cleaned_line = self.cleaner.clean_tweets(line)
         file.write(cleaned_line)
         file.write("\n")
 
     def write_tweet_csv(self, sentiment, name, polarity):
-        with open("../data/dataset/csv/" + name + ".csv", "a") as f:
+        relative_path = "../data/dataset/csv/" + name + ".csv"
+        file_path = os.path.join(self.script_dir, relative_path)
+
+        with open(file_path, "a") as f:
             writer = csv.writer(f)
             line = sentiment.strip()
             cleaned_line = self.cleaner.clean_tweets(line)
@@ -35,8 +47,13 @@ class Dataset_Builder:
         pass
 
     def extract_sentiment_csv(self, csv_name):
+        relative_path = (
+            "../data/twitter_data/labeled_data/unlabeled_" + csv_name + ".csv"
+        )
+        file_path = os.path.join(self.script_dir, relative_path)
+
         with open(
-            "../data/twitter_data/labeled_data/unlabeled_" + csv_name + ".csv",
+            file_path,
             newline="",
             encoding="utf-8",
         ) as csvfile:

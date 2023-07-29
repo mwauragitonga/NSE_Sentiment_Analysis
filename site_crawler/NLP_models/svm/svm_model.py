@@ -7,6 +7,7 @@ from sklearn.metrics import roc_curve, auc
 from sklearn.metrics import classification_report
 from sklearn.svm import SVC
 from sklearn import metrics
+import os
 
 # from sklearn.externals import joblib
 from joblib import load, dump
@@ -16,7 +17,11 @@ import numpy as np
 
 
 def shufflecsv():
-    df = pd.read_csv("../../data/dataset/csv/dataset_sentiment.csv")
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    relative_path = "../../data/dataset/csv/dataset_sentiment.csv"
+    file_path = os.path.join(script_dir, relative_path)
+
+    df = pd.read_csv(file_path)
     df2 = df.reindex(np.random.permutation(df.index))
     df2.to_csv("final.csv", encoding="utf8")
     print("done shuffling")
